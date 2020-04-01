@@ -4,7 +4,7 @@
     <persistence-unit name="NewPersistenceUnit">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
-            <property name="hibernate.connection.url" value=""/>
+            <property name="hibernate.connection.url" value="jdbc:postgresql://ec2-54-247-82-14.eu-west-1.compute.amazonaws.com:5432/dddj0qvpae0k6u"/>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
             <property name="hibernate.connection.username" value=""/>
             <property name="hibernate.connection.password" value=""/>
