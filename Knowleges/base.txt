@@ -1,0 +1,24 @@
+Чтобы приложенка запустилась, нужен контроллер.
+
+@Controller
+public class StudentController {
+    @Autowired
+    public StudentController
+            (Bar bar){
+
+    }
+}
+
+@Component
+public class Bar {
+    @Autowired
+    public Bar(Foo foo){
+
+    }
+}
+
+@Component
+public class Foo {
+}
+
+Если удалить equal и hashCode из dto, то нифига не сломается)
