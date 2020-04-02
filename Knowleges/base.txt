@@ -22,3 +22,7 @@ public class Foo {
 }
 
 Если удалить equal и hashCode из dto, то нифига не сломается)
+
+Чтобы избавиться от setter getter можно подключить loombook (но это не будем делать).
+
+Чтобы взаимодействовать с БД нужно использовать Spring.Data, это проще чем Jpa entityMangerFactory.
