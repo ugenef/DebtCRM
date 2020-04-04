@@ -1,5 +1,9 @@
 Чтобы приложенка запустилась, нужен контроллер.
 
+---===Контроллеры===---
+Контроллеры должны лежать в пакете
+package dcrm.service.controllers;
+Иначе не работает.
 @Controller
 public class StudentController {
     @Autowired
@@ -8,6 +12,8 @@ public class StudentController {
 
     }
 }
+
+
 
 @Component
 public class Bar {
