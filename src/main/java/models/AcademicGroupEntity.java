@@ -2,15 +2,23 @@ package models;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "academic_group", schema = "public", catalog = "dddj0qvpae0k6u")
 public class AcademicGroupEntity {
-    private int groupId;
-    private String groupName;
 
     @Id
     @Column(name = "group_id")
+    private int groupId;
+
+    @Basic
+    @Column(name = "group_name")
+    private String groupName;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "academicGroup")
+    private Set<StudentEntity> students;
+
     public int getGroupId() {
         return groupId;
     }
@@ -19,8 +27,6 @@ public class AcademicGroupEntity {
         this.groupId = groupId;
     }
 
-    @Basic
-    @Column(name = "group_name")
     public String getGroupName() {
         return groupName;
     }
@@ -41,5 +47,13 @@ public class AcademicGroupEntity {
     @Override
     public int hashCode() {
         return Objects.hash(groupId, groupName);
+    }
+
+    @Override
+    public String toString() {
+        return "AcademicGroupEntity{" +
+                "groupId=" + groupId +
+                ", groupName='" + groupName + '\'' +
+                '}';
     }
 }

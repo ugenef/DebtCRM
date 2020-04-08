@@ -2,28 +2,45 @@ package models;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "student", schema = "public", catalog = "dddj0qvpae0k6u")
 public class StudentEntity {
-    private int studentId;
-    private String firstName;
-    private String middleName;
-    private String lastName;
-    private AcademicGroupEntity academicGroupByGroupId;
-
     @Id
     @Column(name = "student_id")
-    public int getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(int studentId) {
-        this.studentId = studentId;
-    }
+    private int id;
 
     @Basic
     @Column(name = "first_name")
+    private String firstName;
+
+    @Basic
+    @Column(name = "middle_name")
+    private String middleName;
+
+    @Basic
+    @Column(name = "last_name")
+    private String lastName;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id")
+    private AcademicGroupEntity academicGroup;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "student_subject",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id"))
+    private Set<SubjectEntity> subjects;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int studentId) {
+        this.id = studentId;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -32,8 +49,6 @@ public class StudentEntity {
         this.firstName = firstName;
     }
 
-    @Basic
-    @Column(name = "middle_name")
     public String getMiddleName() {
         return middleName;
     }
@@ -42,8 +57,6 @@ public class StudentEntity {
         this.middleName = middleName;
     }
 
-    @Basic
-    @Column(name = "last_name")
     public String getLastName() {
         return lastName;
     }
@@ -52,12 +65,20 @@ public class StudentEntity {
         this.lastName = lastName;
     }
 
+    public AcademicGroupEntity getAcademicGroup() {
+        return academicGroup;
+    }
+
+    public void setAcademicGroup(AcademicGroupEntity academicGroupByGroupId) {
+        this.academicGroup = academicGroupByGroupId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StudentEntity that = (StudentEntity) o;
-        return studentId == that.studentId &&
+        return id == that.id &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(middleName, that.middleName) &&
                 Objects.equals(lastName, that.lastName);
@@ -65,16 +86,16 @@ public class StudentEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(studentId, firstName, middleName, lastName);
+        return Objects.hash(id, firstName, middleName, lastName);
     }
 
-    @ManyToOne
-    @JoinColumn(name = "group_id", referencedColumnName = "group_id", nullable = false)
-    public AcademicGroupEntity getAcademicGroupByGroupId() {
-        return academicGroupByGroupId;
-    }
-
-    public void setAcademicGroupByGroupId(AcademicGroupEntity academicGroupByGroupId) {
-        this.academicGroupByGroupId = academicGroupByGroupId;
+    @Override
+    public String toString() {
+        return "StudentEntity{" +
+                "studentId=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
     }
 }
