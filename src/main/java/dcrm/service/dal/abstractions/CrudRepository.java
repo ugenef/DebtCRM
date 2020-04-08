@@ -10,4 +10,6 @@ public interface CrudRepository {
 
     //Возвращает все группы из базы
     Group[] findAllGroups();
+
+    void addStudents(Student[] students);
 }

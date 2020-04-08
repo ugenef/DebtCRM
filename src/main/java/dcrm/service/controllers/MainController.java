@@ -18,7 +18,7 @@ public class MainController {
     @GetMapping("/st")
     public Student[] getStudents() {
 
-        Database db=new Database();
+        Database db = new Database();
 
         // если закрыть сессию здесь, то нельзя будет сделать повторный запрос
         // где закрывать?
@@ -30,7 +30,7 @@ public class MainController {
     @GetMapping("/gr")
     public Group[] getGroups() {
 
-        Database db=new Database();
+        Database db = new Database();
 
         // если закрыть сессию здесь, то нельзя будет сделать повторный запрос
         // где закрывать?

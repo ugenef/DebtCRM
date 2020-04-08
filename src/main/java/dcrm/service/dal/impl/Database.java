@@ -61,6 +61,11 @@ public class Database implements CrudRepository {
         return groups;
     }
 
+    @Override
+    public void addStudents(Student[] students) {
+        //TODO hast
+    }
+
     private Student createStudentModelFromEntity(StudentEntity studentEntity) {
         Student student = new Student();
         student.id = studentEntity.getId();
