@@ -38,4 +38,26 @@ public class MainController {
 
         return db.findAllGroups();
     }
+
+    @GetMapping("/add")
+    public String addStudent() {
+
+        Database db = new Database();
+
+        Student[] students = new Student[1];
+        students[0] = new Student();
+        students[0].id = 2;     // increase this value by 1 before request
+        students[0].firstName = "fff";
+        students[0].middleName = "mmm";
+        students[0].lastName = "lll";
+        students[0].group = getGroups()[0];
+
+        db.addStudents(students);
+
+        // если закрыть сессию здесь, то нельзя будет сделать повторный запрос
+        // где закрывать?
+        //        HibernateUtil.shutdown();
+
+        return "added";
+    }
 }

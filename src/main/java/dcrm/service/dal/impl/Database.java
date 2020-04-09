@@ -9,6 +9,7 @@ import models.AcademicGroupEntity;
 import models.StudentEntity;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+
 import java.util.List;
 
 @Component
@@ -63,7 +64,25 @@ public class Database implements CrudRepository {
 
     @Override
     public void addStudents(Student[] students) {
-        //TODO hast
+        SessionUtil sessionUtil = new SessionUtil();
+        //open session with a transaction
+        sessionUtil.openTransactionSession();
+
+        Session session = sessionUtil.getSession();
+
+        StudentEntity[] studentEntities = new StudentEntity[students.length];
+
+        for (int i = 0; i < studentEntities.length; i++) {
+            studentEntities[i] = createStudentEntityFromModel(students[i]);
+        }
+
+        for (StudentEntity studentEntity : studentEntities) {
+            session.save(studentEntity);
+        }
+
+        //close session with a transaction
+        sessionUtil.closeTransactionSession();
+
     }
 
     private Student createStudentModelFromEntity(StudentEntity studentEntity) {
@@ -72,7 +91,9 @@ public class Database implements CrudRepository {
         student.firstName = studentEntity.getFirstName();
         student.middleName = studentEntity.getMiddleName();
         student.lastName = studentEntity.getLastName();
-        student.group = createGroupModelFromEntity(studentEntity.getAcademicGroup());
+
+        AcademicGroupEntity groupEntity = studentEntity.getAcademicGroup();
+        student.group = createGroupModelFromEntity(groupEntity);
 
         return student;
     }
@@ -83,5 +104,26 @@ public class Database implements CrudRepository {
         group.name = groupEntity.getGroupName();
 
         return group;
+    }
+
+    private StudentEntity createStudentEntityFromModel(Student student) {
+        StudentEntity studentEntity = new StudentEntity();
+        studentEntity.setId(student.id);
+        studentEntity.setFirstName(student.firstName);
+        studentEntity.setMiddleName(student.middleName);
+        studentEntity.setLastName(student.lastName);
+
+        AcademicGroupEntity groupEntity = createGroupEntityFromModel(student.group);
+        studentEntity.setAcademicGroup(groupEntity);
+
+        return studentEntity;
+    }
+
+    private AcademicGroupEntity createGroupEntityFromModel(Group group) {
+        AcademicGroupEntity groupEntity = new AcademicGroupEntity();
+        groupEntity.setGroupId(group.id);
+        groupEntity.setGroupName(group.name);
+
+        return groupEntity;
     }
 }
