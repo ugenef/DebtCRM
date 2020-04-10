@@ -15,7 +15,19 @@ public class StudentService {
         _db = db;
     }
 
-    public Student[] FindAll(){
+    public Student[] FindAll() {
         return _db.findAllStudents();
+    }
+
+    public Student[] FindFromGroup(int groupId) {
+        return _db.findStudentsFromGroup(groupId);
+    }
+
+    public Student[] FindDebtersFromGroup(int groupId) {
+        return _db.findDebtersFromGroup(groupId);
+    }
+
+    public void add(Student student) {
+        _db.addStudents(new Student[]{student});
     }
 }

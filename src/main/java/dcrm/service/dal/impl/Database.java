@@ -1,6 +1,7 @@
 package dcrm.service.dal.impl;
 
 import dcrm.service.bl.SessionUtil;
+import dcrm.service.businessmodels.Debt;
 import dcrm.service.businessmodels.Group;
 import dcrm.service.businessmodels.Student;
 import dcrm.service.dal.abstractions.CrudRepository;
@@ -16,39 +17,65 @@ import java.util.List;
 public class Database implements CrudRepository {
     @Override
     public Student[] findAllStudents() {
+        return findStudents("SELECT * FROM student");
+    }
+
+    @Override
+    public Student[] findStudentsFromGroup(int groupId) {
+        return findStudents(String.format("SELECT * FROM student WHERE group_id = %s", groupId));
+    }
+
+    @Override
+    public Student[] findDebtersFromGroup(int groupId){
+        return findStudents(String.format("select s.*\n" +
+                "from student s\n" +
+                "         inner join student_subject on (student_subject.student_id = s.student_id)\n" +
+                "where group_id = %s", groupId));
+    }
+
+    @Override
+    public void deleteStudent(Student student){
+        executeNoQuery(String.format("delete from student where student_id = %s", student.id));
+    }
+
+    @Override
+    public void addDebt(Debt debt){
+        executeNoQuery(String.format("insert into student_subject(student_id, subject_id) values (%s,%s)",
+                debt.student.id,
+                debt.subject.id));
+    }
+
+    private void executeNoQuery(String sql){
         SessionUtil sessionUtil = new SessionUtil();
         //open session with a transaction
         sessionUtil.openTransactionSession();
 
-        String sql = "SELECT * FROM student";
-
         Session session = sessionUtil.getSession();
-        Query query = session.createNativeQuery(sql).addEntity(StudentEntity.class);
-        List<StudentEntity> studentsFromDb = query.list();
+        //TODO sql
+        //close session with a transaction
+        sessionUtil.closeTransactionSession();
+    }
+
+
+    private Student[] findStudents(String sql) {
+        DbContext context = new DbContext();
+        context.OpenConnection();
+        List<StudentEntity> studentsFromDb = context.getQuery(sql, StudentEntity.class);
 
         Student[] students = new Student[studentsFromDb.size()];
-
         for (int i = 0; i < studentsFromDb.size(); i++) {
             students[i] = createStudentModelFromEntity(studentsFromDb.get(i));
         }
-
-        //close session with a transaction
-        sessionUtil.closeTransactionSession();
-
+        context.CloseConnection();
         return students;
     }
 
     @Override
     public Group[] findAllGroups() {
-        SessionUtil sessionUtil = new SessionUtil();
-        //open session with a transaction
-        sessionUtil.openTransactionSession();
-
+        DbContext context = new DbContext();
+        context.OpenConnection();
         String sql = "SELECT * FROM academic_group";
-
-        Session session = sessionUtil.getSession();
-        Query query = session.createNativeQuery(sql).addEntity(AcademicGroupEntity.class);
-        List<AcademicGroupEntity> groupsFromDb = query.list();
+        List<AcademicGroupEntity> groupsFromDb = context.getQuery(sql, AcademicGroupEntity.class);
 
         Group[] groups = new Group[groupsFromDb.size()];
 
@@ -56,9 +83,7 @@ public class Database implements CrudRepository {
             groups[i] = createGroupModelFromEntity(groupsFromDb.get(i));
         }
 
-        //close session with a transaction
-        sessionUtil.closeTransactionSession();
-
+        context.CloseConnection();
         return groups;
     }
 

@@ -1,5 +1,6 @@
 package dcrm.service.bl;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -31,6 +32,7 @@ public class SessionUtil {
     }
 
     public void closeTransactionSession() {
+
         transaction.commit();
         closeSession();
     }
