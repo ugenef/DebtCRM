@@ -27,4 +27,9 @@ public class DbContext {
         List<TEntity> entities = query.list();
         return entities;
     }
+
+    public void removeEntity(Object entity){
+        Session session = _sessionUtil.getSession();
+        session.remove(entity);
+    }
 }
