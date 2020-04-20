@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import models.AcademicGroupEntity;
 import models.StudentEntity;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
 
 import java.util.List;
 
@@ -34,8 +33,14 @@ public class Database implements CrudRepository {
     }
 
     @Override
-    public void deleteStudent(Student student){
-        executeNoQuery(String.format("delete from student where student_id = %s", student.id));
+    public void deleteStudent(Student student) {
+        DbContext context = new DbContext();
+        context.OpenConnection();
+
+        StudentEntity studentEntity = createStudentEntityFromModel(student);
+        context.removeEntity(studentEntity);
+
+        context.CloseConnection();
     }
 
     @Override
