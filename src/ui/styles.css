@@ -1,0 +1,88 @@
+.outer {
+    display: flex;
+    flex-flow: column;
+    height: 900px;
+}
+
+.header {
+    order: 1;
+    height: 10%;
+    border: 2px solid orange;
+    border-radius: 20px;
+    margin: 0.5%;
+    display: flex;
+    flex-flow: row;
+}
+
+.header .logo{
+    width: 13%;
+    height: 60%;
+    margin: 10px;
+    padding-top: 13px;
+    text-align: center;
+    font-size: 35px;
+    font-family: Impact, cursive;
+    font-style: italic;
+}
+
+.header .slogan{
+    width: 43%;
+    height: 60%;
+    margin: 10px 10px 10px 37px;
+    padding-top: 13px;
+    text-align: left;
+    font-size: 35px;
+    font-family: Impact, cursive;
+    font-style: italic;
+}
+
+.page{
+    order: 2;
+    height: 90%;
+    display: flex;
+    flex-flow: row;
+}
+
+.sidebar {
+    width: 15%;
+    order: 1;
+    background-image: linear-gradient(#de6262,#ffb88c);
+    border: 2px solid orange;
+    border-radius: 20px;
+    margin: 0.5%;
+
+    display: flex;
+    flex-flow: column;
+}
+
+.sidebar .title{
+    height: 10%;
+    text-align: center;
+    font-size: 25px;
+    padding-top: 15px;
+    font-family: "Comic Sans MS", sans-serif;
+}
+.sidebar .buttons{
+    display: flex;
+    flex-flow: column;
+    margin-top: 10%;
+}
+
+.sidebar .buttons > button{
+    margin: 10%;
+    border: 2px solid orange;
+    border-radius: 20px;
+    background-color: white;
+    font-size: 19px;
+    padding: 5px 15px;
+    font-family: "Comic Sans MS", sans-serif;
+}
+
+.frame{
+    width: 85%;
+    order: 2;
+    height: available;
+    border: 2px solid orange;
+    border-radius: 20px;
+    margin: 0.5%;
+}
