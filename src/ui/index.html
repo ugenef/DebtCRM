@@ -16,15 +16,18 @@
         <div class="sidebar">
             <div class="title">Меню^^</div>
             <div class="buttons">
-                <button class="debts">Хвосты</button>
-                <button class="students">Студенты</button>
-                <button class="teachers">Преподы</button>
-                <button class="teachers">Предметы</button>
+                <button id="debtsButton" class="debts">Хвосты</button>
+                <button id="studentsButton" class="students">Студенты</button>
+                <button id="teachersButton" class="teachers">Преподы</button>
+                <button id="subjectsButton" class="subjects">Предметы</button>
             </div>
         </div>
-        <div class="frame">
+        <div id="frame" class="frame">
+            <div id = "frameLoader" class="loader" hidden></div>
+            <table id = "queryListTable" class="queryList" hidden></table>
         </div>
     </div>
 </div>
+<script src="scripts.js"></script>
 </body>
 </html>

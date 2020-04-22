@@ -2,11 +2,13 @@ package dcrm.service.controllers;
 
 import dcrm.service.businesslayer.StudentService;
 import dcrm.service.businessmodels.Student;
+import dcrm.service.controllers.dto.StudentDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/students")
+@CrossOrigin(origins = "*")
 public class StudentController {
     private StudentService _service;
 
@@ -16,8 +18,8 @@ public class StudentController {
     }
 
     @GetMapping()
-    public Student[] findAll() {
-        return _service.FindAll();
+    public StudentDto[] findAll() {
+        return StudentDto.Map(_service.FindAll());
     }
 
     @GetMapping(value = "/{groupId}")
