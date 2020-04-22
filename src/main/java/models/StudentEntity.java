@@ -99,4 +99,7 @@ public class StudentEntity {
                 '}';
     }
 
+    public Set<SubjectEntity> getSubjects() {
+        return subjects;
+    }
 }

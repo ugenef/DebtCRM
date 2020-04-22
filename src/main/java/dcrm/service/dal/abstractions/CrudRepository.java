@@ -1,8 +1,6 @@
 package dcrm.service.dal.abstractions;
 
-import dcrm.service.businessmodels.Debt;
-import dcrm.service.businessmodels.Group;
-import dcrm.service.businessmodels.Student;
+import dcrm.service.businessmodels.*;
 
 public interface CrudRepository {
 
@@ -12,6 +10,12 @@ public interface CrudRepository {
     Student[] findStudentsFromGroup(int groupId);
 
     Student[] findDebtersFromGroup(int groupId);
+
+    Teacher[] findAllTeachers();
+
+    Subject[] findAllSubjects();
+
+    Debt[] findAllDebts();
 
     void deleteStudent(Student student);
 

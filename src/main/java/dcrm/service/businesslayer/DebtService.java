@@ -1,6 +1,7 @@
 package dcrm.service.businesslayer;
 
 import dcrm.service.businessmodels.Debt;
+import dcrm.service.businessmodels.Student;
 import dcrm.service.dal.abstractions.CrudRepository;
 import dcrm.service.dal.impl.Database;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +12,10 @@ public class DebtService {
 
     public DebtService(Database db) {
         _db = db;
+    }
+
+    public Debt[] FindAll() {
+        return _db.findAllDebts();
     }
 
     public void AddDebt(int studentId, int subjectId){

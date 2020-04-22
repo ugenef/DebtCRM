@@ -1,16 +1,17 @@
 package dcrm.service.dal.impl;
 
 import dcrm.service.bl.SessionUtil;
-import dcrm.service.businessmodels.Debt;
-import dcrm.service.businessmodels.Group;
-import dcrm.service.businessmodels.Student;
+import dcrm.service.businessmodels.*;
 import dcrm.service.dal.abstractions.CrudRepository;
+import models.SubjectEntity;
+import models.TeacherEntity;
 import org.springframework.stereotype.Component;
 import models.AcademicGroupEntity;
 import models.StudentEntity;
 import org.hibernate.Session;
 
 import java.util.List;
+import java.util.Vector;
 
 @Component
 public class Database implements CrudRepository {
@@ -25,11 +26,46 @@ public class Database implements CrudRepository {
     }
 
     @Override
-    public Student[] findDebtersFromGroup(int groupId){
+    public Student[] findDebtersFromGroup(int groupId) {
         return findStudents(String.format("select s.*\n" +
                 "from student s\n" +
                 "         inner join student_subject on (student_subject.student_id = s.student_id)\n" +
                 "where group_id = %s", groupId));
+    }
+
+    @Override
+    public Teacher[] findAllTeachers() {
+        return findTeachers("SELECT * FROM teacher");
+    }
+
+    @Override
+    public Subject[] findAllSubjects() {
+        return findSubjects("SELECT * FROM subject");
+    }
+
+    @Override
+    public Debt[] findAllDebts() {
+        DbContext context = new DbContext();
+        context.OpenConnection();
+        List<StudentEntity> studentsFromDb = context.getQuery("SELECT * FROM student", StudentEntity.class);
+
+        Vector<Debt> debts = new Vector<>();
+        for (StudentEntity student : studentsFromDb) {
+            for (SubjectEntity subject : student.getSubjects()) {
+                Debt debt = new Debt();
+                debt.student = createStudentModelFromEntity(student);
+                debt.subject = createSubjectModelFromEntity(subject);
+                debts.add(debt);
+            }
+        }
+
+        Debt[] debtArray = new Debt[debts.size()];
+        for (int i = 0; i < debts.size(); i++) {
+            debtArray[i] = debts.get(i);
+        }
+
+        context.CloseConnection();
+        return debtArray;
     }
 
     @Override
@@ -44,13 +80,13 @@ public class Database implements CrudRepository {
     }
 
     @Override
-    public void addDebt(Debt debt){
+    public void addDebt(Debt debt) {
         executeNoQuery(String.format("insert into student_subject(student_id, subject_id) values (%s,%s)",
                 debt.student.id,
                 debt.subject.id));
     }
 
-    private void executeNoQuery(String sql){
+    private void executeNoQuery(String sql) {
         SessionUtil sessionUtil = new SessionUtil();
         //open session with a transaction
         sessionUtil.openTransactionSession();
@@ -73,6 +109,32 @@ public class Database implements CrudRepository {
         }
         context.CloseConnection();
         return students;
+    }
+
+    private Teacher[] findTeachers(String sql) {
+        DbContext context = new DbContext();
+        context.OpenConnection();
+        List<TeacherEntity> teachersFromDb = context.getQuery(sql, TeacherEntity.class);
+
+        Teacher[] teachers = new Teacher[teachersFromDb.size()];
+        for (int i = 0; i < teachersFromDb.size(); i++) {
+            teachers[i] = createTeacherModelFromEntity(teachersFromDb.get(i));
+        }
+        context.CloseConnection();
+        return teachers;
+    }
+
+    private Subject[] findSubjects(String sql) {
+        DbContext context = new DbContext();
+        context.OpenConnection();
+        List<SubjectEntity> subjectsFromDb = context.getQuery(sql, SubjectEntity.class);
+
+        Subject[] subjects = new Subject[subjectsFromDb.size()];
+        for (int i = 0; i < subjectsFromDb.size(); i++) {
+            subjects[i] = createSubjectModelFromEntity(subjectsFromDb.get(i));
+        }
+        context.CloseConnection();
+        return subjects;
     }
 
     @Override
@@ -126,6 +188,24 @@ public class Database implements CrudRepository {
         student.group = createGroupModelFromEntity(groupEntity);
 
         return student;
+    }
+
+    private Teacher createTeacherModelFromEntity(TeacherEntity teacherEntity) {
+        Teacher teacher = new Teacher();
+        teacher.id = teacherEntity.getId();
+        teacher.firstName = teacherEntity.getFirstName();
+        teacher.middleName = teacherEntity.getMiddleName();
+        teacher.lastName = teacherEntity.getLastName();
+
+        return teacher;
+    }
+
+    private Subject createSubjectModelFromEntity(SubjectEntity subjectEntity) {
+        Subject subject = new Subject();
+        subject.id = subjectEntity.getId();
+        subject.name = subjectEntity.getName();
+
+        return subject;
     }
 
     private Group createGroupModelFromEntity(AcademicGroupEntity groupEntity) {
