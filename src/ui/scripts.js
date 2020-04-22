@@ -1,23 +1,64 @@
-const debtsHeader = ["Фамилия", "Имя", "Отчество", "Группа", "Предмет"];
+const host = "http://localhost:8080";
 
-const debt1 = {fn: "Bowie", sn: "David", mn: "Johnes", gr: "KN101", sub: "Music"};
-const debt2 = {fn: "Bowie", sn: "David", mn: "Johnes", gr: "KN103", sub: "Music"};
+const debtSetup = {
+    header: ["Фамилия", "Имя", "Отчество", "Группа", "Предмет"],
+    restPath: "/debts;"
+};
 
-const debters = [debt1, debt2];
+const studentSetup = {
+    header: ["Фамилия", "Имя", "Отчество", "Группа"],
+    restPath: "/students;"
+};
+
+const teacherSetup = {
+    header: ["Фамилия", "Имя", "Отчество"],
+    restPath: "/teachers;"
+};
+
+const subjectSetup = {
+    header: ["Название"],
+    restPath: "/subjects;"
+};
 
 let debtsButton = document.getElementById("debtsButton");
 debtsButton.addEventListener("click", showDebts);
 
+let studentsButton = document.getElementById("studentsButton");
+studentsButton.addEventListener("click", showStudents);
 
-function showDebts() {
+let teachersButton = document.getElementById("teachersButton");
+teachersButton.addEventListener("click", showTeachers);
+
+let subjectsButton = document.getElementById("subjectsButton");
+subjectsButton.addEventListener("click", showSubjects);
+
+
+async function showDebts() {
+    await updateTable(debtSetup);
+}
+
+async function showStudents() {
+    await updateTable(studentSetup);
+}
+
+async function showTeachers() {
+    await updateTable(teacherSetup);
+}
+
+async function showSubjects() {
+    await updateTable(subjectSetup);
+}
+
+async function updateTable(setup) {
     let loader = document.getElementById("frameLoader");
-    loader.hidden = false;
     let oldTable = document.getElementById("queryListTable");
-    let table = buildTable(debtsHeader, debters);
+    oldTable.hidden = true;
+    loader.hidden = false;
+    let response = await getBackend(setup.restPath);
+    let table = buildTable(setup.header, response);
     loader.hidden = true;
     oldTable.replaceWith(table);
 }
-
 
 function buildTable(headerValues, dataItems) {
     let header = generateHeader(headerValues);
@@ -32,17 +73,17 @@ function buildTable(headerValues, dataItems) {
 
 function buildBody(dataItems) {
     let body = document.createElement("tbody");
-    for (let i=0;i<dataItems.length;i++) {
+    for (let i = 0; i < dataItems.length; i++) {
         let row = generateRow("td", Object.values(dataItems[i]));
         body.appendChild(row);
     }
     return body;
 }
 
-function generateRow(tagName, rowValues) {
+function generateRow(tagName, rowValues, header = false) {
     let row = document.createElement("tr");
-    let cells = generateCells(tagName, rowValues);
-    for (let i = 0; i< cells.length;i++) {
+    let cells = generateCells(tagName, rowValues, header);
+    for (let i = 0; i < cells.length; i++) {
         row.appendChild(cells[i]);
     }
     return row;
@@ -50,14 +91,15 @@ function generateRow(tagName, rowValues) {
 
 function generateHeader(headerValues) {
     let header = document.createElement("thead");
-    let headerRow = generateRow("th", headerValues);
+    let headerRow = generateRow("th", headerValues, true);
     header.appendChild(headerRow);
     return header;
 }
 
-function generateCells(tagName, cellValues) {
+function generateCells(tagName, cellValues, header) {
     let cells = [];
-    for (let i = 0; i < cellValues.length; i++) {
+    let mysteryInt = header ? 0 : 1;
+    for (let i = mysteryInt; i < cellValues.length; i++) {
         let cell = document.createElement(tagName);
         cell.innerHTML = cellValues[i];
         cells.push(cell);
@@ -65,3 +107,9 @@ function generateCells(tagName, cellValues) {
     return cells;
 }
 
+async function getBackend(path) {
+    const response = await fetch(host + path, {
+        method: "GET"
+    });
+    return await response.json();
+}
